@@ -1,11 +1,16 @@
 module GetOpts
     ( getOpts
+    , isGoodArgs
     ) where
 
 import qualified Types as Types
 
 options :: [Char]
 options = ['h', 'd', 'x', 'u']
+
+isGoodArgs :: Types.EitherArgs a b -> Bool
+isGoodArgs ( Types.BadArgs  _ ) = False
+isGoodArgs ( Types.GoodArgs _ ) = True
 
 goodFlags :: [Char] -> Bool
 goodFlags flags =
@@ -28,13 +33,13 @@ getBase flags
     | elem 'd' flags = Types.Dec
     | otherwise = Types.Dec
 
-getOpts :: [String] -> Maybe Types.Cmds
+getOpts :: [String] -> Types.EitherArgs String Types.Cmds
 getOpts args = if goodFlags flags
-        then Just Types.Cmds
+        then Types.GoodArgs Types.Cmds
             { Types.source = getSrc filenames
             , Types.mode = getMode flags
             , Types.base = getBase flags }
-        else Nothing
+        else Types.BadArgs "Unrecognized option."
     where
-        flags = [y | (x:xs) <- args, y <- xs, x == '-']
-        filenames = [w | w@(x:xs) <- args, x /= '-']
+        flags = [ y | (x:xs) <- args, y <- xs, x == '-' ]
+        filenames = [ w | w@(x:xs) <- args, x /= '-' ]

@@ -8,6 +8,8 @@ data Mode = HelpMode | ShuffleMode | UnshuffleMode deriving (Eq)
 
 data Base = Dec | Hex deriving (Eq)
 
+data EitherArgs a b = BadArgs a | GoodArgs b deriving (Eq)
+
 data Cmds = Cmds
     { source :: Source String
     , mode :: Mode
