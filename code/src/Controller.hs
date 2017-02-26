@@ -4,7 +4,9 @@ module Controller
 
 import System.IO
 import System.Directory (doesFileExist)
+import qualified System.Random as Rand (getStdGen)
 import qualified Types as Types
+import qualified Model as Model
 
 dispatch :: Types.Mode -> Types.Cmds -> IO ()
 dispatch m
@@ -32,29 +34,24 @@ doHelp :: Types.Cmds -> IO ()
 doHelp cmd = do
     putStrLn "Running Help"
 
+getInputString :: Types.Cmds -> IO String
+getInputString cmd = do
+    case Types.source cmd of
+        Types.StdIn -> getContents
+        Types.File fn -> readFile fn
+
 doShuffle :: Types.Cmds -> IO ()
 doShuffle cmd = do
-    putStrLn "Running shuffle"
+    toShuffleRaw <- getInputString cmd
+    let toShuffle = unwords . lines $ toShuffleRaw
+    stdGen <- Rand.getStdGen
+    let (shuffled, _) = Model.shuffleList toShuffle stdGen
+    putStrLn shuffled
 
 doUnshuffle :: Types.Cmds -> IO ()
 doUnshuffle cmd = do
-    putStrLn "Running unshuffle"
-
---routeShuffle :: Types.Cmds -> IO ()
---routeShuffle cmd = do
---    case Types.source cmd of
---        Types.StdIn -> do
---            content <- getContents
---            shufDispatch cmd $ content
---            return ()
---        Types.File fn -> do
---            fileExists <- doesFileExist fn
---            if fileExists
---                then do
---                    content <- readFile fn
---                    shufDispatch cmd $ content
---                else do
---                    putStrLn $ "File '" ++ fn ++ "' does not exist"
+    toUnshuffle <- getInputString cmd
+    putStrLn $ "unshuffling " ++ toUnshuffle
 
 dispatchCmd :: Types.Cmds -> IO ()
 dispatchCmd cmd = do
