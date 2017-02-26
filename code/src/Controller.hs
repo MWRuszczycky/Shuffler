@@ -4,6 +4,7 @@ module Controller
 
 import System.IO
 import System.Directory (doesFileExist)
+import Text.Printf (printf)
 import qualified System.Random as Rand (getStdGen)
 import qualified Types as Types
 import qualified Model as Model
@@ -53,9 +54,14 @@ doShuffle :: Types.Cmds -> IO ()
 doShuffle cmd = do
     toShuffleRaw <- getInputString cmd
     let toShuffle = unwords . lines $ toShuffleRaw
+        numbered = zip toShuffle [0..]
     stdGen <- Rand.getStdGen
-    let (shuffled, _) = Model.shuffleList toShuffle stdGen
-    putStrLn shuffled
+    let (shuffled, _) = Model.shuffleList numbered stdGen
+    let outputStr = unwords [format x n | (x,n) <- shuffled]
+            where format x n = if x == ' '
+                  then "()-" ++ (show n)
+                  else [x] ++ "-" ++ (show n)
+    putStr outputStr
 
 doUnshuffle :: Types.Cmds -> IO ()
 -- ^Obtains the input string, unshuffles it and sends the result to
