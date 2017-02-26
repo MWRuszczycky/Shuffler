@@ -6,7 +6,7 @@ module GetOpts
 import qualified Types as Types
 
 options :: [Char]
-options = ['h', 'd', 'x', 'u']
+options = ['h', 'u', 'p', 'd', 'x']
 
 isGoodArgs :: Types.EitherArgs a b -> Bool
 isGoodArgs ( Types.BadArgs  _ ) = False
@@ -25,6 +25,7 @@ getMode :: [Char] -> Types.Mode
 getMode flags
     | elem 'h' flags = Types.HelpMode
     | elem 'u' flags = Types.UnshuffleMode
+    | elem 'p' flags = Types.PrintMode
     | otherwise = Types.ShuffleMode
 
 getBase :: [Char] -> Types.Base

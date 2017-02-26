@@ -4,7 +4,7 @@ module Types
 
 data Source a = StdIn | File a deriving (Eq)
 
-data Mode = HelpMode | ShuffleMode | UnshuffleMode deriving (Eq)
+data Mode = HelpMode | ShuffleMode | UnshuffleMode | PrintMode deriving (Eq)
 
 data Base = Dec | Hex deriving (Eq)
 

@@ -7,5 +7,5 @@ main = do
     args <- Env.getArgs
     let parsedCmds = GetOpts.getOpts args
     if GetOpts.isGoodArgs parsedCmds
-        then Ctr.printCommands $ (\ (Types.GoodArgs c) -> c) parsedCmds
+        then Ctr.dispatchCmd $ (\ (Types.GoodArgs c) -> c) parsedCmds
         else putStrLn $ (\ (Types.BadArgs s) -> s) parsedCmds
