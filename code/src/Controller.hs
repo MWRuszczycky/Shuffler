@@ -3,13 +3,14 @@ module Controller
     ) where
 
 import System.IO
+import System.Directory (doesFileExist)
 import qualified Types as Types
 
 dispatch :: [(Types.Mode, Types.Cmds -> IO ())]
 dispatch =
     [ (Types.HelpMode, doHelp)
     , (Types.ShuffleMode, doShuffle)
-    , (Types.UnshuffleMode, doUnshuffle)
+    , (Types.UnshuffleMode, doShuffle)
     , (Types.PrintMode, printCommands) ]
 
 printCommands :: Types.Cmds -> IO ()
@@ -33,11 +34,15 @@ doHelp cmd = do
 
 doShuffle :: Types.Cmds -> IO ()
 doShuffle cmd = do
-    putStrLn "Running Shuffle"
-
-doUnshuffle :: Types.Cmds -> IO ()
-doUnshuffle cmd = do
-    putStrLn "Running Unshuffle"
+    case Types.source cmd of
+        Types.StdIn -> putStrLn "un/shuffling stdin"
+        Types.File fn -> do
+            fileExists <- doesFileExist fn
+            if fileExists
+                then do
+                    putStrLn $ "un/shuffling " ++ fn
+                else do
+                    putStrLn $ "File " ++ fn ++ "does not exist"
 
 dispatchCmd :: Types.Cmds -> IO ()
 dispatchCmd cmd = do
