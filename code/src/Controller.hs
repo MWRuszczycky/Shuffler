@@ -57,11 +57,8 @@ doShuffle cmd = do
         numbered = zip toShuffle [0..]
     stdGen <- Rand.getStdGen
     let (shuffled, _) = Model.shuffleList numbered stdGen
-    let outputStr = unwords [format x n | (x,n) <- shuffled]
-            where format x n = if x == ' '
-                  then "()-" ++ (show n)
-                  else [x] ++ "-" ++ (show n)
-    putStr outputStr
+    let fPairs = [Model.formatPair x n (Types.base cmd) | (x,n) <- shuffled]
+    putStr $ unwords fPairs
 
 doUnshuffle :: Types.Cmds -> IO ()
 -- ^Obtains the input string, unshuffles it and sends the result to
