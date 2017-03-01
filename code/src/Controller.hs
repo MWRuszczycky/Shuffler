@@ -29,10 +29,11 @@ printCommands cmd = do
         Types.ShuffleMode -> putStrLn "Shuffle mode"
         Types.UnshuffleMode -> putStrLn "Unshuffle mode"
         Types.HelpMode -> putStrLn "Help mode"
-        Types.PrintMode -> putStrLn "Help mode"
+        Types.PrintMode -> putStrLn "Print mode"
     case Types.base cmd of
         Types.Dec -> putStrLn "Decimal base"
         Types.Hex -> putStrLn "Hex base"
+        Types.NoBase -> putStrLn "No base"
     return ()
 
 doHelp :: Types.Cmds -> IO ()

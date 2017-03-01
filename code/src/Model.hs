@@ -29,11 +29,12 @@ formatPair :: Char -> Int -> Types.Base -> String
 -- sequences. The Types.Base variable is used to determine the
 -- format of the sequence number.
 formatPair c n b = if c == ' '
-    then "( )-" ++ nf
-    else [c] ++ "-" ++ nf
+    then "( )" ++ nf
+    else [c] ++ nf
         where nf = case b of
-                        Types.Dec -> show n
-                        Types.Hex -> toHex n
+                        Types.Dec -> "-" ++ show n
+                        Types.Hex -> "-" ++ toHex n
+                        Types.NoBase -> ""
 
 toHex :: Int -> String
 -- ^Converts an Integral type from its decimal representation to its
@@ -57,12 +58,3 @@ hexFormat :: Int -> Char
 -- 16 to their hexadecimal format as Char.
 hexFormat n = hexKey !! (mod n 16)
     where hexKey = ['0'..'9'] ++ ['a'..'f']
---hexFormat n
---    | remainder < 10 = head . show $ remainder
---    | remainder == 10 = 'a'
---    | remainder == 11 = 'b'
---    | remainder == 12 = 'c'
---    | remainder == 13 = 'd'
---    | remainder == 14 = 'e'
---    | remainder == 15 = 'f'
---    where remainder = mod n 16
