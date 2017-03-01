@@ -24,7 +24,7 @@ shuffleList xs gen =
         (remainder, g0) = shuffleList (deletePos pos xs) nextGen
     in (x:remainder, g0)
 
-formatPair :: (Show a, Integral a) => Char -> a -> Types.Base -> String
+formatPair :: Char -> Int -> Types.Base -> String
 -- ^Formats character-number pairs for outputting the shuffled
 -- sequences. The Types.Base variable is used to determine the
 -- format of the sequence number.
@@ -35,16 +35,16 @@ formatPair c n b = if c == ' '
                         Types.Dec -> show n
                         Types.Hex -> toHex n
 
-toHex :: (Show a, Integral a) => a -> String
+toHex :: Int -> String
 -- ^Converts an Integral type from its decimal representation to its
 -- hexadecimal representation as a String with most significant digit
 -- first.
 toHex n = reverse $ map hexFormat (getHex n 0)
 
-getHex :: Integral a => a -> a -> [a]
--- ^Helper function for toHex that converts an Integral type from its
+getHex :: Int -> Int -> [Int]
+-- ^Helper function for toHex that converts an Int type from its
 -- decimal representation to its hexadecimal representation as a list
--- of integers with the most significant digit last.
+-- of Int with the most significant digit last.
 getHex n p
     | n == 0 = [0]
     | div n (16^p) == 0 = []
@@ -52,15 +52,17 @@ getHex n p
     where hex = getHex n (p+1)
           red = sum $ zipWith (*) hex [16^z | z <- [(p+1)..]]
 
-hexFormat :: (Show a, Integral a) => a -> Char
+hexFormat :: Int -> Char
 -- ^Helper function for toHex that converts decimal integers less
 -- 16 to their hexadecimal format as Char.
-hexFormat n
-    | remainder < 10 = head . show $ remainder
-    | remainder == 10 = 'a'
-    | remainder == 11 = 'b'
-    | remainder == 12 = 'c'
-    | remainder == 13 = 'd'
-    | remainder == 14 = 'e'
-    | remainder == 15 = 'f'
-    where remainder = mod n 16
+hexFormat n = hexKey !! (mod n 16)
+    where hexKey = ['0'..'9'] ++ ['a'..'f']
+--hexFormat n
+--    | remainder < 10 = head . show $ remainder
+--    | remainder == 10 = 'a'
+--    | remainder == 11 = 'b'
+--    | remainder == 12 = 'c'
+--    | remainder == 13 = 'd'
+--    | remainder == 14 = 'e'
+--    | remainder == 15 = 'f'
+--    where remainder = mod n 16
