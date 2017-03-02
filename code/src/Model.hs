@@ -7,6 +7,8 @@ module Model
 import qualified Types as Types
 import qualified System.Random as Rand
 
+-- |Functions for shuffling lists.
+
 deletePos :: Int -> [a] -> [a]
 -- ^Delete an element from a list at a specified position.
 deletePos _ [] = []
@@ -24,6 +26,8 @@ shuffleList xs gen =
         (remainder, g0) = shuffleList (deletePos pos xs) nextGen
     in (x:remainder, g0)
 
+-- |Functions for formatting and extracting pairs.
+
 formatPair :: Char -> Int -> Types.Base -> String
 -- ^Formats character-number pairs for outputting the shuffled
 -- sequences. The Types.Base variable is used to determine the
@@ -35,6 +39,9 @@ formatPair c n b = if c == ' '
                         Types.Dec -> "-" ++ show n
                         Types.Hex -> "-" ++ toHex n
                         Types.NoBase -> ""
+
+
+-- |Functions for formatting and unformatting hexadecimal numbers.
 
 toHex :: Int -> String
 -- ^Converts an Integral type from its decimal representation to its
