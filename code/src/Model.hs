@@ -7,7 +7,9 @@ module Model
 import qualified Types as Types
 import qualified System.Random as Rand
 
--- |Functions for shuffling lists.
+---------------------------------------------------------------------
+-- Functions for shuffling lists
+---------------------------------------------------------------------
 
 deletePos :: Int -> [a] -> [a]
 -- ^Delete an element from a list at a specified position.
@@ -26,7 +28,9 @@ shuffleList xs gen =
         (remainder, g0) = shuffleList (deletePos pos xs) nextGen
     in (x:remainder, g0)
 
--- |Functions for formatting and extracting pairs.
+---------------------------------------------------------------------
+-- Functions for formatting and extracting pairs
+---------------------------------------------------------------------
 
 formatPair :: Char -> Int -> Types.Base -> String
 -- ^Formats character-number pairs for outputting the shuffled
@@ -40,8 +44,24 @@ formatPair c n b = if c == ' '
                         Types.Hex -> "-" ++ toHex n
                         Types.NoBase -> ""
 
+parsePairs :: String -> [(String, String)]
+-- ^Extracts hyphen and space delimited pairs from an input string.
+-- The parsing is intended to reverse the shuffle output. If there
+-- are missing dashes results in default numbering from 0.
+parsePairs w
+    | w == [] = []
+    | not $ elem '-' w = zip (words w) (map show [0..])
+    | otherwise =
+        let trimmed = dropWhile (== ' ') w  -- drop leading spaces
+            x = takeWhile (/= '-') trimmed  -- before the dash after spaces
+            xs = dropWhile (/= '-') trimmed -- dash & everything after
+            d:n = takeWhile (/= ' ') xs     -- after dash before spaces
+            rest = dropWhile (/= ' ') xs    -- everything else
+        in (x,n):(parsePairs rest)
 
--- |Functions for formatting and unformatting hexadecimal numbers.
+---------------------------------------------------------------------
+-- Functions for formatting and unformatting hexadecimal numbers
+---------------------------------------------------------------------
 
 toHex :: Int -> String
 -- ^Converts an Integral type from its decimal representation to its
