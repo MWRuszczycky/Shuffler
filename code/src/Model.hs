@@ -59,9 +59,42 @@ parsePairs w
             rest = dropWhile (/= ' ') xs    -- everything else
         in (x,n):(parsePairs rest)
 
+readPair :: (String, String) -> (Int, String)
+readPair (s, w@(x:xs)) =
+    case x of
+        'x' -> ((makeNum Types.Hex xs), formStr s)
+        'd' -> ((makeNum Types.Dec xs), formStr s)
+        _   -> ((makeNum Types.Dec w), formStr s)
+
+formStr :: String -> String
+formStr s
+    | s == "( )" = " "
+    | otherwise = s
+
 ---------------------------------------------------------------------
 -- Functions for formatting and unformatting hexadecimal numbers
 ---------------------------------------------------------------------
+
+makeNum :: Types.Base -> String -> Int
+makeNum base s = makeNumHelper base 0 0 $ reverse s
+
+makeNumHelper :: Types.Base -> Int -> Int -> String -> Int
+makeNumHelper _ _ n [] = n
+makeNumHelper base p n (c:cs) = makeNumHelper base (p + 1) (n + f c * b^p) cs
+    where
+        decKeys = ['0'..'9']
+        hexKeys = ['0'..'9'] ++ ['a'..'f']
+        b       = case base of
+                       Types.Dec -> 10
+                       Types.Hex -> 16
+                       _         -> 10
+        keyMap  = case base of
+                       Types.Dec -> zip decKeys [0..]
+                       Types.Hex -> zip hexKeys [0..15]
+                       _         -> zip decKeys [0..]
+        f c     = case lookup c keyMap of
+                       Just x    -> x
+                       Nothing   -> 0
 
 toHex :: Int -> String
 -- ^Converts an Integral type from its decimal representation to its
