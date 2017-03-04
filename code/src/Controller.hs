@@ -4,7 +4,6 @@ module Controller
 
 import System.IO
 import System.Directory (doesFileExist)
-import Text.Printf (printf)
 import qualified System.Random as Rand (getStdGen)
 import qualified Types as Types
 import qualified Model as Model
