@@ -28,6 +28,13 @@ shuffleList xs gen =
         (remainder, g0) = shuffleList (deletePos pos xs) nextGen
     in (x:remainder, g0)
 
+sortPairs :: Ord a => [(a, String)] -> [(a, String)]
+-- ^Naive quicksort for an associative array with orderable keys.
+sortPairs [] = []
+sortPairs (x:xs) = belowPiv ++ [x] ++ abovePiv
+    where belowPiv = sortPairs [p | p <- xs, fst p <= fst x]
+          abovePiv = sortPairs [p | p <- xs, fst p > fst x]
+
 ---------------------------------------------------------------------
 -- Functions for formatting and extracting pairs
 ---------------------------------------------------------------------
