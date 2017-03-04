@@ -15,30 +15,11 @@ dispatch m
     | m == Types.HelpMode = doHelp
     | m == Types.ShuffleMode = doShuffle
     | m == Types.UnshuffleMode = doUnshuffle
-    | m == Types.PrintMode = printCommands
-
-printCommands :: Types.Cmds -> IO ()
--- ^Prints a summary of how the program will operate based on the
--- input options.
-printCommands cmd = do
-    case Types.source cmd of
-        Types.StdIn -> putStrLn "Standard input"
-        Types.File fn -> putStrLn $ "File: " ++ fn
-    case Types.mode cmd of
-        Types.ShuffleMode -> putStrLn "Shuffle mode"
-        Types.UnshuffleMode -> putStrLn "Unshuffle mode"
-        Types.HelpMode -> putStrLn "Help mode"
-        Types.PrintMode -> putStrLn "Print mode"
-    case Types.base cmd of
-        Types.Dec -> putStrLn "Decimal base"
-        Types.Hex -> putStrLn "Hex base"
-        Types.NoBase -> putStrLn "No base"
-    return ()
 
 doHelp :: Types.Cmds -> IO ()
 -- ^Displays the help text to the terminal.
 doHelp cmd = do
-    putStrLn "Running Help"
+    putStrLn "Help is still under construction."
 
 getInputString :: Types.Cmds -> IO String
 -- ^Obtains the string to be un/shuffled from the input source

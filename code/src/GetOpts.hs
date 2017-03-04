@@ -6,13 +6,12 @@ module GetOpts
 import qualified Types as Types
 
 options :: [Char]
-options = ['h', 'd', 'x', 'n', 'u', 'p']
+options = ['h', 'd', 'x', 'n', 'u']
 -- h: help mode
 -- d: dec base
 -- x: hex base
 -- n: no base (no numbering)
 -- u: unshuffle mode
--- p: print mode
 
 isGoodArgs :: Types.EitherArgs a b -> Bool
 isGoodArgs ( Types.BadArgs  _ ) = False
@@ -31,7 +30,6 @@ getMode :: [Char] -> Types.Mode
 getMode flags
     | elem 'h' flags = Types.HelpMode
     | elem 'u' flags = Types.UnshuffleMode
-    | elem 'p' flags = Types.PrintMode
     | otherwise = Types.ShuffleMode
 
 getBase :: [Char] -> Types.Base
