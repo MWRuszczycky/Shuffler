@@ -60,6 +60,8 @@ parsePairs w
         in (x,n):(parsePairs rest)
 
 readPair :: (String, String) -> (Int, String)
+-- ^Converts string pairs to numbered strings in pairs. This format
+-- is used for unshuffling the components of shuffled strings.
 readPair (s, w@(x:xs)) =
     case x of
         'x' -> ((makeNum Types.Hex xs), formStr s)
@@ -67,6 +69,7 @@ readPair (s, w@(x:xs)) =
         _   -> ((makeNum Types.Dec w), formStr s)
 
 formStr :: String -> String
+-- ^Used to read and convert special characters in the input string.
 formStr s
     | s == "( )" = " "
     | otherwise = s
@@ -76,25 +79,25 @@ formStr s
 ---------------------------------------------------------------------
 
 makeNum :: Types.Base -> String -> Int
-makeNum base s = makeNumHelper base 0 0 $ reverse s
+-- ^Converts a positive integer as a string to an integer type based
+-- on the base argument. This is similar to the read built in, but
+-- allows different bases.
+makeNum base s = makeNumHelper baseVal 0 0 $ reverse s
+    where baseVal = case base of
+                         Types.Dec -> 10
+                         Types.Hex -> 16
+                         _         -> 10
 
-makeNumHelper :: Types.Base -> Int -> Int -> String -> Int
+makeNumHelper :: Int -> Int -> Int -> String -> Int
+-- ^Helper function for the makeNum function that converts numbers as
+-- strings to positive integers.
+-- Args: b is the base, p is the power and n is the result.
 makeNumHelper _ _ n [] = n
-makeNumHelper base p n (c:cs) = makeNumHelper base (p + 1) (n + f c * b^p) cs
-    where
-        decKeys = ['0'..'9']
-        hexKeys = ['0'..'9'] ++ ['a'..'f']
-        b       = case base of
-                       Types.Dec -> 10
-                       Types.Hex -> 16
-                       _         -> 10
-        keyMap  = case base of
-                       Types.Dec -> zip decKeys [0..]
-                       Types.Hex -> zip hexKeys [0..15]
-                       _         -> zip decKeys [0..]
-        f c     = case lookup c keyMap of
-                       Just x    -> x
-                       Nothing   -> 0
+makeNumHelper b p n (c:cs) = makeNumHelper b (p + 1) (n + f c * b^p) cs
+    where keyMap = zip (['0'..'9'] ++ ['a'..]) [0..b]
+          f c    = case lookup c keyMap of
+                        Just x    -> x
+                        Nothing   -> 0
 
 toHex :: Int -> String
 -- ^Converts an Integral type from its decimal representation to its
