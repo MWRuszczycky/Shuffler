@@ -50,15 +50,13 @@ getInputString cmd = do
         Types.File fn -> readFile fn
 
 doShuffle :: Types.Cmds -> IO ()
--- ^Obtains the input string, shuffles it and sends the result to
--- standard output.
+-- ^Obtains the input string, shuffles and numbers it before sending
+-- the result to standard output.
 doShuffle cmd = do
     toShuffleRaw <- getInputString cmd
-    let toShuffle = unwords . lines $ toShuffleRaw
-        numbered = zip toShuffle [0..]
     stdGen <- Rand.getStdGen
-    let (shuffled, _) = Model.shuffleList numbered stdGen
-    let fPairs = [Model.formatPair x n (Types.base cmd) | (x,n) <- shuffled]
+    let numShuffled = Model.numShuffle toShuffleRaw stdGen
+        fPairs = [Model.formatPair x n (Types.base cmd) | (x,n) <- numShuffled]
     putStr $ unwords fPairs
 
 doUnshuffle :: Types.Cmds -> IO ()
@@ -66,7 +64,7 @@ doUnshuffle :: Types.Cmds -> IO ()
 -- standard output.
 doUnshuffle cmd = do
     toUnshuffle <- getInputString cmd
-    putStrLn $ "unshuffling " ++ toUnshuffle
+    putStrLn $ Model.unShuffle toUnshuffle
 
 dispatchCmd :: Types.Cmds -> IO ()
 -- ^Routes the program flow after checking to make sure an input

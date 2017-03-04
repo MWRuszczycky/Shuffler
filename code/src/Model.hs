@@ -1,7 +1,8 @@
 module Model
-    ( shuffleList
-    , toHex
+    ( numShuffle
+    , unShuffle
     , formatPair
+    , toHex
     ) where
 
 import qualified Types as Types
@@ -28,12 +29,27 @@ shuffleList xs gen =
         (remainder, g0) = shuffleList (deletePos pos xs) nextGen
     in (x:remainder, g0)
 
+numShuffle :: Rand.RandomGen g => String -> g -> [(Char, Int)]
+-- ^Takes a string and random seed and returns an associative array
+-- with the decomposed string and the numeric position of each
+-- character in the original, unshuffled string.
+numShuffle str stdGen   = shuffled
+    where strDecomp     = unwords . lines $ str
+          numDecomp     = zip strDecomp [0..]
+          (shuffled, _) = shuffleList numDecomp stdGen
+
 sortPairs :: Ord a => [(a, String)] -> [(a, String)]
 -- ^Naive quicksort for an associative array with orderable keys.
 sortPairs [] = []
 sortPairs (x:xs) = belowPiv ++ [x] ++ abovePiv
     where belowPiv = sortPairs [p | p <- xs, fst p <= fst x]
           abovePiv = sortPairs [p | p <- xs, fst p > fst x]
+
+unShuffle :: String -> String
+-- ^Formats and unshuffles the input string returning the formatted
+-- output string.
+unShuffle inStr = concat [s | (_,s) <- sorted]
+    where sorted = sortPairs $ map readPair (parsePairs inStr)
 
 ---------------------------------------------------------------------
 -- Functions for formatting and extracting pairs
@@ -47,8 +63,8 @@ formatPair c n b = if c == ' '
     then "( )" ++ nf
     else [c] ++ nf
         where nf = case b of
-                        Types.Dec -> "-" ++ show n
-                        Types.Hex -> "-" ++ toHex n
+                        Types.Dec -> "-d" ++ show n
+                        Types.Hex -> "-x" ++ toHex n
                         Types.NoBase -> ""
 
 parsePairs :: String -> [(String, String)]
