@@ -2,7 +2,7 @@ module Model
     ( numShuffle
     , unShuffle
     , formatPair
-    , toHex
+    , helpStr
     ) where
 
 import qualified Types as Types
@@ -144,3 +144,18 @@ hexFormat :: Int -> Char
 -- 16 to their hexadecimal format as Char.
 hexFormat n = hexKey !! (mod n 16)
     where hexKey = ['0'..'9'] ++ ['a'..'f']
+
+---------------------------------------------------------------------
+-- Help output string
+---------------------------------------------------------------------
+helpStr :: String
+helpStr = unlines
+    [ "\nUsage: shuffler [OPTION] [FILE]"
+    , "Shuffle/unshuffle FILE or standard input to standard output.\n"
+    , "Options:"
+    , "   -d           shuffle with decimal numbering (default)"
+    , "   -x           shuffle with hexadecimal numbering"
+    , "   -n           shuffle, but do not number the output"
+    , "   -u           unshuffle (requires numbered shuffle output)"
+    , "   -h           display help\n"
+    , "With no FILE, standard input is shuffled/unshuffled."]

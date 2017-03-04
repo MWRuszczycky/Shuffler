@@ -19,7 +19,7 @@ dispatch m
 doHelp :: Types.Cmds -> IO ()
 -- ^Displays the help text to the terminal.
 doHelp cmd = do
-    putStrLn "Help is still under construction."
+    putStrLn Model.helpStr
 
 getInputString :: Types.Cmds -> IO String
 -- ^Obtains the string to be un/shuffled from the input source
