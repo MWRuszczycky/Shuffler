@@ -31,13 +31,14 @@ getInputString cmd = do
 
 doShuffle :: Types.Cmds -> IO ()
 -- ^Obtains the input string, shuffles and numbers it before sending
--- the result to standard output.
+-- the result to standard output with simple columnar printing.
 doShuffle cmd = do
     toShuffleRaw <- getInputString cmd
     stdGen <- Rand.getStdGen
     let numShuffled = Model.numShuffle toShuffleRaw stdGen
         fPairs = [Model.formatPair x n (Types.base cmd) | (x,n) <- numShuffled]
-    putStr $ unwords fPairs
+        n = Model.maxLength fPairs
+    mapM_ putStr . Model.addPadding 6 n $ fPairs
 
 doUnshuffle :: Types.Cmds -> IO ()
 -- ^Obtains the input string, unshuffles it and sends the result to

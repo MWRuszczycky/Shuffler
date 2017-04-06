@@ -3,10 +3,13 @@ module Model
     , unShuffle
     , formatPair
     , helpStr
+    , maxLength
+    , addPadding
     ) where
 
 import qualified Types as Types
 import qualified System.Random as Rand
+import Data.List ( foldl' )
 
 ---------------------------------------------------------------------
 -- Functions for shuffling lists
@@ -96,6 +99,26 @@ formStr :: String -> String
 formStr s
     | s == "( )" = " "
     | otherwise = s
+
+maxLength :: [String] -> Int
+-- ^Finds the length of the longest string in a list of strings.
+maxLength xs = foldl' findMax 0 xs
+    where findMax n x = if length x > n
+                           then length x
+                           else n
+
+addPadding :: Int -> Int -> [String] -> [String]
+-- ^Pads all the strings in the input list to length p and adds
+-- newlines to all n-th strings. If the string is too long for
+-- padding then nothing is done. An extra space is added to separate
+-- the output strings with a single space.
+addPadding n p xs = [ f n p m x | (m,x) <- zip [1..] xs ]
+    where pad m x = if length x > m
+                       then ""
+                       else replicate ( 1 + m - (length x) ) (' ')
+          f linePt width wno x = if mod wno linePt == 0
+                                    then pad width x ++ x ++ "\n"
+                                    else pad width x ++ x
 
 ---------------------------------------------------------------------
 -- Functions for formatting and unformatting hexadecimal numbers
