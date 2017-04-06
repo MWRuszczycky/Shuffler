@@ -27,9 +27,11 @@ then the command
 ```
 produces the output
 ```text
-m-xa o-x13 u-x17 t-x10 f-x18 e-x1 ( )-xc s-x8 t-xd e-xe ( )-x7 ( )-x4
-h-x16 r-x2 e-x3 ( )-x14 .-x1c s-x6 f-x19 o-x9 x-xf t-x12 i-x5 H-x0
-l-x1a s-x15 ( )-x11 e-x1b e-xb
+ ( )-d17   m-d10   h-d22    H-d0   e-d11   x-d15
+    s-d8  ( )-d7   f-d25    e-d3   s-d21  ( )-d4
+   f-d24   e-d27   u-d23    i-d5 ( )-d20   e-d14
+    o-d9    e-d1   t-d13   .-d28   o-d19   t-d16
+    r-d2    s-d6   l-d26   t-d18 ( )-d12
 ```
 The `( )` strings denote spaces in the original string. New lines are removed and replaced with spaces. Likewise, running
 ```bash
