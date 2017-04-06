@@ -10,6 +10,7 @@ module Model
 import qualified Types as Types
 import qualified System.Random as Rand
 import Data.List ( foldl' )
+import Data.Char ( isSpace )
 
 ---------------------------------------------------------------------
 -- Functions for shuffling lists
@@ -72,17 +73,15 @@ formatPair c n b = if c == ' '
 
 parsePairs :: String -> [(String, String)]
 -- ^Extracts hyphen and space delimited pairs from an input string.
--- The parsing is intended to reverse the shuffle output. If there
--- are missing dashes results in default numbering from 0.
+-- The parsing is intended to reverse the shuffle output.
 parsePairs w
     | w == [] = []
-    | not $ elem '-' w = zip (words w) (map show [0..])
+    | isSpace . head $ w = parsePairs . dropWhile isSpace $ w
     | otherwise =
-        let trimmed = dropWhile (== ' ') w  -- drop leading spaces
-            x = takeWhile (/= '-') trimmed  -- before the dash after spaces
-            xs = dropWhile (/= '-') trimmed -- dash & everything after
-            d:n = takeWhile (/= ' ') xs     -- after dash before spaces
-            rest = dropWhile (/= ' ') xs    -- everything else
+        let x = takeWhile (/= '-') w             -- before dash after spaces
+            xs = dropWhile (/= '-') w            -- dash & everything after
+            d:n = takeWhile (not . isSpace) xs   -- after dash before spaces
+            rest = dropWhile (not . isSpace) xs  -- everything else
         in (x,n):(parsePairs rest)
 
 readPair :: (String, String) -> (Int, String)
